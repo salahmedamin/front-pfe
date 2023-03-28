@@ -1,13 +1,16 @@
 // project import
-import pages from './pages';
-import dashboard from './dashboard';
-import utilities from './utilities';
-import support from './support';
+import { fournisseurs, products, rh } from "./admin";
+import dashboard from "./dashboard";
+import user from "./user";
 
 // ==============================|| MENU ITEMS ||============================== //
 
-const menuItems = {
-    items: [dashboard, pages, utilities, support]
-};
+const menuItems = (u) => ({
+  items: [
+    dashboard,
+    ...(!u.isAdmin ? [user] : []),
+    ...(u.isAdmin ? [products, rh, fournisseurs] : []),
+  ],
+});
 
 export default menuItems;

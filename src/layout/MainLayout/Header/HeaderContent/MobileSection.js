@@ -7,7 +7,6 @@ import { useTheme } from '@mui/material/styles';
 // project import
 import Transitions from '../../../../components/@extended/Transitions';
 import Profile from './Profile';
-import Search from './Search';
 
 // assets
 import { MoreOutlined } from '@ant-design/icons';
@@ -86,7 +85,6 @@ const MobileSection = () => {
                             <ClickAwayListener onClickAway={handleClose}>
                                 <AppBar color="inherit">
                                     <Toolbar>
-                                        <Search />
                                         <Profile />
                                     </Toolbar>
                                 </AppBar>

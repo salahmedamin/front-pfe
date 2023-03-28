@@ -1,6 +1,5 @@
 // project import
 import SimpleBar from '../../../../components/third-party/SimpleBar';
-import NavCard from './NavCard';
 import Navigation from './Navigation';
 
 // ==============================|| DRAWER CONTENT ||============================== //
@@ -15,7 +14,6 @@ const DrawerContent = () => (
         }}
     >
         <Navigation />
-        <NavCard />
     </SimpleBar>
 );
 
