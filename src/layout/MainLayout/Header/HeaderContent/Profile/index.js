@@ -36,6 +36,9 @@ function TabPanel({ children, value, index, ...other }) {
       hidden={value !== index}
       id={`profile-tabpanel-${index}`}
       aria-labelledby={`profile-tab-${index}`}
+      style={{
+        position: "relative"
+      }}
       {...other}
     >
       {value === index && children}

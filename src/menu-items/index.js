@@ -8,8 +8,8 @@ import user from "./user";
 const menuItems = (u) => ({
   items: [
     dashboard,
-    ...(!u.isAdmin ? [user] : []),
-    ...(u.isAdmin ? [products, rh, fournisseurs] : []),
+    ...(!u.isAdmin ? [user, products, rh(u)] : []),
+    ...(u.isAdmin ? [products, rh(u), fournisseurs] : []),
   ],
 });
 

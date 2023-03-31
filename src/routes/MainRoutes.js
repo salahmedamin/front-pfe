@@ -2,11 +2,10 @@ import { lazy } from "react";
 
 // project import
 import Loadable from "../components/Loadable";
+import { NotFound } from "../components/NotFound";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import MainLayout from "../layout/MainLayout";
-import { ManageCategories } from "../pages/manage/Categories";
-import { ManageTaches } from "../pages/manage/Taches";
-import { ManageUsers } from "../pages/manage/Users";
+import { ManageEntity } from "../pages/manage/ManageEntity";
 
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import("../pages/dashboard")));
@@ -74,16 +73,12 @@ const MainRoutes = {
       element: <AntIcons />,
     },
     {
-      path: "/manage/taches",
-      element: <ManageTaches />
+      path: "/manage/:entity",
+      element: <ManageEntity />,
     },
     {
-      path: "/manage/users",
-      element: <ManageUsers />
-    },
-    {
-      path: "/manage/categories",
-      element: <ManageCategories />
+      path: "/*",
+      element: <NotFound />
     }
   ],
 };
