@@ -13,20 +13,12 @@ const pages = {
   type: "group",
   children: [
     {
-      id: "products",
-      title: "My Products",
-      type: "item",
-      url: "/manage/produits",
-      icon: icons.WidgetsOutlined,
-      target: true,
-    },
-    {
       id: "tasks",
       title: "My Tasks",
       type: "item",
       url: "/manage/taches",
       icon: icons.TaskAltOutlined,
-      target: true,
+      // target: true,
     },
   ],
 };

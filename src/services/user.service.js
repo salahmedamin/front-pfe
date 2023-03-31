@@ -1,11 +1,21 @@
 import { axios } from "../axios";
 import { dispatch } from "../store";
-import { addEntity, resetEntity } from "../store/reducers/entities";
+import { addEntity } from "../store/reducers/entities";
+import { addSnackbar } from "../store/reducers/snackbar";
 
 export const userService = {
-  paginateUsersList: async (page = 0, ...filters) => {
-    const {data} = await axios.get("/users", { params: { page, ...filters } });
-    if(page === 0) dispatch(resetEntity({entity: "user"}))
+  paginateUsersList: async (page = 0, filters) => {
+    const { data } = await axios.get("/users", {
+      params: { page, ...filters },
+    });
     dispatch(addEntity({ entity: "user", data }));
+  },
+  updatePassword: async ({ old, nw }) => {
+    await axios.put("/users", { oldPassword: old, password: nw });
+    dispatch(
+      addSnackbar({
+        snackbar: { message: "Password updated", type: "success" },
+      })
+    );
   },
 };

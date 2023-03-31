@@ -8,8 +8,9 @@ import { countService } from "./count.service";
 export const authService = {
   checkToken: async () => {
     try {
-      await axios.get("/auth");
-      const token = localStorage.getItem("token");
+      const {data:{ token : newToken} } = await axios.get("/auth");
+      if(newToken) localStorage.setItem("token",newToken)
+      const token = newToken || localStorage.getItem("token");
       const user = JSON.parse(atob(token.split(".")[1]));
       dispatch(login({ user }));
       await countService.getAndSetTotals();

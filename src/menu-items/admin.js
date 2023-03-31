@@ -1,12 +1,12 @@
 // assets
 import {
-    CategoryOutlined,
-    FactoryOutlined,
-    PersonOutlined,
-    ReceiptLongOutlined,
-    TaskAltOutlined,
-    WidgetsOutlined,
-    WorkspacesOutlined
+  CategoryOutlined,
+  FactoryOutlined,
+  PersonOutlined,
+  ReceiptLongOutlined,
+  TaskAltOutlined,
+  WidgetsOutlined,
+  WorkspacesOutlined
 } from "@mui/icons-material";
 
 // icons
@@ -51,7 +51,7 @@ const products = {
   ],
 };
 
-const rh = {
+const rh = ({ isAdmin }) => ({
   id: "rh",
   title: "HR & Tasks",
   type: "group",
@@ -70,15 +70,19 @@ const rh = {
       url: "/manage/users",
       icon: icons.PersonOutlined,
     },
-    {
-      id: "tache",
-      title: "Tasks",
-      type: "item",
-      url: "/manage/taches",
-      icon: icons.TaskAltOutlined,
-    },
+    ...(!isAdmin
+      ? []
+      : [
+          {
+            id: "tache",
+            title: "Tasks",
+            type: "item",
+            url: "/manage/taches",
+            icon: icons.TaskAltOutlined,
+          },
+        ]),
   ],
-};
+});
 
 const fournisseurs = {
   id: "fournisseurs",

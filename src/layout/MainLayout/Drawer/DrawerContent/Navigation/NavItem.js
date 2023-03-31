@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { forwardRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 // material-ui
 import { Avatar, Chip, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
@@ -17,7 +17,7 @@ const NavItem = ({ item, level }) => {
     const dispatch = useDispatch();
     const menu = useSelector((state) => state.menu);
     const { drawerOpen, openItem } = menu;
-
+    const location = useLocation()
     let itemTarget = '_self';
     if (item.target) {
         itemTarget = '_blank';
@@ -35,8 +35,8 @@ const NavItem = ({ item, level }) => {
     const Icon = item.icon;
     const itemIcon = item.icon ? <Icon style={{ fontSize: drawerOpen ? '1rem' : '1.25rem' }} /> : false;
 
-    const isSelected = openItem.findIndex((id) => id === item.id) > -1;
-
+    // const isSelected = openItem.findIndex((id) => id === item.id) > -1;
+    const isSelected = location.pathname.match(item.id)
     // active menu item on page load
     useEffect(() => {
         const currentIndex = document.location.pathname

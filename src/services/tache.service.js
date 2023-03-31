@@ -1,6 +1,6 @@
 import { axios } from "../axios";
 import { dispatch } from "../store";
-import { addEntity, resetEntity } from "../store/reducers/entities";
+import { addEntity } from "../store/reducers/entities";
 
 export const tacheService = {
   getAdminUndergoingTasks: async (page) => {
@@ -27,9 +27,8 @@ export const tacheService = {
     await axios.put(`/taches/${taskID}`, { etat: "REJETEE" });
     if (typeof cb === "function") cb();
   },
-  paginateTasksList: async (page = 0) => {
-    const {data} = await axios.get("/taches", { params: { page } });
-    if(page === 0) dispatch(resetEntity({entity: "tache"}))
+  paginateTasksList: async (page = 0, filters) => {
+    const {data} = await axios.get("/taches", { params: { page, ...filters } });
     dispatch(addEntity({ entity: "tache", data }));
   },
 };

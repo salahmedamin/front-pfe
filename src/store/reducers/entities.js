@@ -51,11 +51,14 @@ const entities = createSlice({
       if (!(entity in state)) return;
       state[entity].data = state[entity].data.filter(e=>e.id !== id)
     },
-    updateEntity: (state, { payload: { entity, id, newdata } }) => {
+    updateEntity: (state, { payload: { entity, id, data } }) => {
       if (!(entity in state)) return;
       const index = state[entity].data.findIndex((e) => e.id === id);
       if (index === -1) return;
-      state[entity].data[index] = newdata;
+      state[entity].data[index] = {
+        ...state[entity].data[index],
+        ...data
+      };
     },
     paginateEntity: (
       state,
