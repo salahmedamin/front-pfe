@@ -10,11 +10,14 @@ export const marqueService = {
     if (returnWithoutDispatch) return data;
     else dispatch(addEntity({ entity: "marque", data }));
   },
-  createMarque: async({nom})=>{
-    const {data} = await axios.post("/marques",{nom})
-    return data
+  createMarque: async ({ nom }) => {
+    const { data } = await axios.post("/marques", { nom });
+    return data;
   },
-  getMarque: async({ id }) =>{
-    return (await axios.get("/marques/"+id)).data
-  }
+  getMarque: async ({ id }) => {
+    return (await axios.get("/marques/" + id)).data;
+  },
+  updateMarque: async ({ id, nom }) => {
+    return (await axios.put("/marques/" + id, { nom })).data;
+  },
 };

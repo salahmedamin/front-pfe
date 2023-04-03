@@ -7,6 +7,8 @@ import React, {
   useState
 } from "react";
 
+//perfect scrollbar
+
 // material-ui
 import {
   Box,
@@ -88,8 +90,8 @@ const entityDataCallback = (user) => ({
 function OrderTableHead({ entity }) {
   const { user } = useSelector((s) => s.auth);
   return (
-    <TableHead>
-      <TableRow>
+    <TableHead style={{ position: "sticky", top: 0, zIndex: 1 }}>
+      <TableRow style={{ backgroundColor: "white" }}>
         {table_data.head[entity]().map((headCell, i) =>
           ((headCell.admin || i === 0) && !user.isAdmin) ||
           headCell.canEdit === false ? null : i === 0 ? (
@@ -367,6 +369,8 @@ export const OrdersTable = React.memo(
             display: "block",
             maxWidth: "100%",
             "& td, & th": { whiteSpace: "nowrap" },
+            maxHeight: 540,
+            overflowY: "scroll",
           }}
         >
           <Table
@@ -381,7 +385,12 @@ export const OrdersTable = React.memo(
             }}
           >
             <OrderTableHead entity={entity} />
-            <TableBody>
+            <TableBody
+              sx={{
+                maxHeight: 420,
+                overflowY: "scroll",
+              }}
+            >
               {dataToMap.length === 0 ? (
                 <Stack justifyContent={"center"} width={"100%"} padding={2}>
                   No data to display
@@ -421,7 +430,8 @@ export const OrdersTable = React.memo(
                               onClick={() =>
                                 dispatch(
                                   showModal({
-                                    title: "Update " + entity,
+                                    title:
+                                      "Updating",
                                     body: (
                                       <ModalCreateOrUpdate
                                         entity={entity}
