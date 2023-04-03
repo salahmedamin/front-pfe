@@ -90,7 +90,14 @@ const entityDataCallback = (user) => ({
 function OrderTableHead({ entity }) {
   const { user } = useSelector((s) => s.auth);
   return (
-    <TableHead style={{ position: "sticky", top: 0, zIndex: 1 }}>
+    <TableHead
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 1,
+        boxShadow: "0px -2px 15px 1px rgb(0,0,0,.4)",
+      }}
+    >
       <TableRow style={{ backgroundColor: "white" }}>
         {table_data.head[entity]().map((headCell, i) =>
           ((headCell.admin || i === 0) && !user.isAdmin) ||
@@ -430,8 +437,7 @@ export const OrdersTable = React.memo(
                               onClick={() =>
                                 dispatch(
                                   showModal({
-                                    title:
-                                      "Updating",
+                                    title: "Updating",
                                     body: (
                                       <ModalCreateOrUpdate
                                         entity={entity}
