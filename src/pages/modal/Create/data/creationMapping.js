@@ -104,8 +104,8 @@ export const creationMapping = {
         name: "nom",
         type: "text",
         init: "",
-        validate: (v) => v.length > 5,
-        errorMessage: "Brand name must be longer than 5 letters",
+        validate: (v) => v.length > 3,
+        errorMessage: "Brand name must be longer than 3 letters",
       },
       {
         label: "Create brand",
@@ -120,10 +120,24 @@ export const creationMapping = {
           return data;
         },
         validate: (v) => {
-          return v.nom.value.length > 5;
+          return v.nom.value.length > 3;
         },
       },
     ],
-    update: {},
+    update: {
+      submitLabel: "Update Brand",
+      getInit: async ({ id }) => {
+        return await marqueService.getMarque({ id });
+      },
+      submit: async (values, id, cb) => {
+        const { nom } = values;
+        const data = await marqueService.updateMarque({
+          id,
+          nom: nom.value,
+        });
+        if (typeof cb === "function") await cb();
+        return data;
+      },
+    },
   },
 };

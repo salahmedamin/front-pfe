@@ -82,16 +82,18 @@ export const ModalCreateOrUpdate = ({
       const single = await updateMappingEntity.getInit({ id });
       for (const prop of Object.keys(single)) {
         const field = getField(prop);
-        if (!!field)
+        if (!!field) {
           updateField(prop, {
             value:
+              !!updateMappingEntity.formatField &&
               typeof updateMappingEntity.formatField[prop] === "function"
                 ? updateMappingEntity.formatField[prop](single[prop])
                 : single[prop],
           });
+        }
       }
       setloading(false);
-      console.log(values);
+      // console.log(values);
     } catch (error) {
       console.log(error);
       dispatch(hideModal());
