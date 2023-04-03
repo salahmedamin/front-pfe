@@ -7,4 +7,11 @@ export const equipeService = {
     const {data} = await axios.get("/equipes", { params: { page, ...filters } });
     dispatch(addEntity({ entity: "equipe", data }));
   },
+  createEquipe: async({nom})=>{
+    const {data} = await axios.post("/equipes",{nom})
+    return data
+  },
+  getEquipe: async({ id }) =>{
+    return (await axios.get("/equipes/"+id)).data
+  }
 };

@@ -5,6 +5,7 @@ import { combineReducers } from "redux";
 import auth from "./auth";
 import entities from "./entities";
 import menu from "./menu";
+import modal from "./modal";
 import prompt from "./prompt";
 import snackbar from "./snackbar";
 import totals from "./totals";
@@ -18,6 +19,7 @@ const reducers = combineReducers({
   entities,
   totals,
   prompt,
+  modal,
 });
 
 export default reducers;

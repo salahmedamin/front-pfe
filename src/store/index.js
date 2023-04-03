@@ -7,9 +7,13 @@ import reducers from './reducers';
 // ==============================|| REDUX TOOLKIT - MAIN STORE ||============================== //
 
 const store = configureStore({
-    reducer: reducers
+    reducer: reducers,
+    middleware: getDefaultMiddleWare => getDefaultMiddleWare({
+        serializableCheck: false,
+    })
 });
 
 const { dispatch } = store;
 
 export { store, dispatch };
+

@@ -45,20 +45,44 @@ const entities = createSlice({
       if (!(entity in state)) return;
       if (Array.isArray(data))
         state[entity].data = [...state[entity].data, ...data];
-      else state[entity].data.push(data);
+      else state[entity].data.unshift(data);
     },
     deleteEntity: (state, { payload: { entity, id } }) => {
       if (!(entity in state)) return;
-      state[entity].data = state[entity].data.filter(e=>e.id !== id)
+      state[entity].data = state[entity].data.filter((e) => e.id !== id);
     },
-    updateEntity: (state, { payload: { entity, id, data } }) => {
+    updateEntity: (state, { payload: { entity, id, data, callback } }) => {
       if (!(entity in state)) return;
       const index = state[entity].data.findIndex((e) => e.id === id);
       if (index === -1) return;
-      state[entity].data[index] = {
-        ...state[entity].data[index],
-        ...data
-      };
+      //if data object is an object with primitive non function values
+      const functions = Object.keys(data).filter(
+        (e) => typeof data[e] === "function"
+      );
+      if (!functions.length)
+        state[entity].data[index] = {
+          ...state[entity].data[index],
+          ...data,
+        };
+      //if it contains function(s), extract them and merge object
+      else {
+        const functionsResults = functions.reduce(
+          (tot, e) =>
+            (tot = {
+              ...tot,
+              [e]: data[e](state[entity].data[index][e], index),
+            }),
+          {}
+        );
+        const primProps = Object.keys(data).filter(
+          (e) => typeof data[e] !== "function"
+        );
+        state[entity].data[index] = {
+          ...state[entity].data[index],
+          ...functionsResults,
+          ...primProps,
+        };
+      }
     },
     paginateEntity: (
       state,

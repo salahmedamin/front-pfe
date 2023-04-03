@@ -33,7 +33,12 @@ import Dot from "../../components/@extended/Dot";
 
 //Services
 import { CloseOutlined } from "@ant-design/icons";
-import { ArrowBack, FilterListOutlined } from "@mui/icons-material";
+import {
+  AddOutlined,
+  ArrowBack,
+  CreateOutlined,
+  FilterListOutlined
+} from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router";
 import { createSearchParams } from "react-router-dom";
 import { categorieService } from "../../services/categorie.service";
@@ -46,8 +51,10 @@ import { tacheService } from "../../services/tache.service";
 import { userService } from "../../services/user.service";
 import { dispatch } from "../../store";
 import { paginateEntity, resetEntity } from "../../store/reducers/entities";
+import { showModal } from "../../store/reducers/modal";
 import { table_data } from "../../table_data";
 import { uniq } from "../../utils/unique";
+import { ModalCreateOrUpdate } from "../modal/Create/ModalCreateOrUpdate";
 //import { categorieService } from "../../services/categorie.service";
 //import { equipeService } from "../../services/equipe.service";
 //import { fournisseurService } from "../../services/fournisseur.service";
@@ -71,7 +78,7 @@ const entityDataCallback = (user) => ({
   marque: async (page, filters) =>
     await marqueService.paginateMarquesList(page, filters),
   facture: async (page, filters) =>
-    await factureService.paginateProductsList(page, filters),
+    await factureService.paginateFacturesList(page, filters),
   fournisseur: async (page, filters) =>
     await fournisseurService.paginateFournisseursList(page, filters),
 });
@@ -83,8 +90,13 @@ function OrderTableHead({ entity }) {
   return (
     <TableHead>
       <TableRow>
-        {table_data.head[entity]().map((headCell) =>
-          headCell.admin && !user.isAdmin ? null : (
+        {table_data.head[entity]().map((headCell, i) =>
+          ((headCell.admin || i === 0) && !user.isAdmin) ||
+          headCell.canEdit === false ? null : i === 0 ? (
+            <TableCell key={"edit"} align={"center"} padding={"none"}>
+              Edit
+            </TableCell>
+          ) : (
             <TableCell
               key={headCell.id}
               align={"center"}
@@ -187,6 +199,7 @@ export const OrdersTable = React.memo(
       [locationSearch]
     );
     const dataToMap = useMemo(() => uniq(data), [data]);
+    const cannotCreateEntities = useMemo(() => ["tache"], []);
     //usecallback is same as usememo but for functions to avoid unneeded rerendering
     //onSearch
     const onSearch = useCallback(
@@ -211,7 +224,12 @@ export const OrdersTable = React.memo(
     const previous = useRef({ page, entity, backendFilters }).current;
     //paginateCb
     const paginateCb = useCallback(async () => {
-      if (fetchedPages.includes(page) && previous.entity === entity && previous.backendFilters === backendFilters) return;
+      if (
+        fetchedPages.includes(page) &&
+        previous.entity === entity &&
+        previous.backendFilters === backendFilters
+      )
+        return;
       //set new values to keep track
       previous.entity = entity;
       previous.page = page;
@@ -271,6 +289,17 @@ export const OrdersTable = React.memo(
             width="100%"
             padding={2}
           >
+            <Button
+              color="secondary"
+              variant="text"
+              style={{
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              <FilterListOutlined />
+              <Typography>Filter</Typography>
+            </Button>
             <Stack direction={"row"} gap={1}>
               <TextField
                 autoComplete={"false"}
@@ -304,9 +333,29 @@ export const OrdersTable = React.memo(
                 Search
               </Button>
             </Stack>
-            <IconButton>
-              <FilterListOutlined />
-            </IconButton>
+            {!create ||
+            cannotCreateEntities.includes(entity) ||
+            !user.isAdmin ? null : (
+              <Button
+                color="primary"
+                variant="text"
+                style={{
+                  alignItems: "center",
+                  gap: 10,
+                }}
+                onClick={() =>
+                  dispatch(
+                    showModal({
+                      title: "Add new " + entity,
+                      body: <ModalCreateOrUpdate entity={entity} />,
+                    })
+                  )
+                }
+              >
+                <AddOutlined />
+                <Typography>Create</Typography>
+              </Button>
+            )}
           </Stack>
         )}
         {/* Table */}
@@ -365,7 +414,29 @@ export const OrdersTable = React.memo(
                         </Stack>
                       ) : null}
                       {table_data.body[entity](row).map((e, i) =>
-                        e.admin && !user.isAdmin ? null : (
+                        ((e.admin || i === 0) && !user.isAdmin) ||
+                        e.canEdit === false ? null : i === 0 ? (
+                          <TableCell key={i} align="center">
+                            <IconButton
+                              onClick={() =>
+                                dispatch(
+                                  showModal({
+                                    title: "Update " + entity,
+                                    body: (
+                                      <ModalCreateOrUpdate
+                                        entity={entity}
+                                        isUpdating={true}
+                                        id={e.value}
+                                      />
+                                    ),
+                                  })
+                                )
+                              }
+                            >
+                              <CreateOutlined />
+                            </IconButton>
+                          </TableCell>
+                        ) : (
                           <TableCell key={i} align="center">
                             {e.value}
                           </TableCell>
@@ -379,49 +450,42 @@ export const OrdersTable = React.memo(
           </Table>
         </TableContainer>
         {/* PAGINATE AND CREATE */}
-        {!paginate && !create ? null : (
+        {!paginate ? null : (
           <Stack
             direction={"row"}
             alignItems="center"
-            justifyContent={"space-between"}
+            justifyContent={"center"}
             margin={2}
             padding={1}
             width={"100%"}
           >
-            {!create ? null : (
-              <Button color="primary" variant="text">
-                Create
-              </Button>
-            )}
-            {!paginate ? null : (
-              <Stack direction={"row"} justifyContent="center">
-                <IconButton
-                  disabled={page <= 0}
-                  onClick={() =>
-                    dispatch(paginateEntity({ entity, decrement: true }))
-                  }
-                >
-                  <ArrowBack fontSize="medium" />
-                </IconButton>
-                <IconButton
-                  disabled={
-                    (dataToMap.length % 20 > 0 || dataToMap?.length === 0) &&
-                    !fetchedPages.includes(page + 1)
-                  }
-                  style={{ transform: "rotate(180deg)" }}
-                  onClick={() =>
-                    dispatch(
-                      paginateEntity({
-                        entity,
-                        increment: true,
-                      })
-                    )
-                  }
-                >
-                  <ArrowBack fontSize="medium" />
-                </IconButton>
-              </Stack>
-            )}
+            <Stack direction={"row"} justifyContent="center">
+              <IconButton
+                disabled={page <= 0}
+                onClick={() =>
+                  dispatch(paginateEntity({ entity, decrement: true }))
+                }
+              >
+                <ArrowBack fontSize="medium" />
+              </IconButton>
+              <IconButton
+                disabled={
+                  (dataToMap.length % 20 > 0 || dataToMap?.length === 0) &&
+                  !fetchedPages.includes(page + 1)
+                }
+                style={{ transform: "rotate(180deg)" }}
+                onClick={() =>
+                  dispatch(
+                    paginateEntity({
+                      entity,
+                      increment: true,
+                    })
+                  )
+                }
+              >
+                <ArrowBack fontSize="medium" />
+              </IconButton>
+            </Stack>
             <Box />
           </Stack>
         )}
