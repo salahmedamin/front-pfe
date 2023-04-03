@@ -18,4 +18,15 @@ export const userService = {
       })
     );
   },
+  getUser: async ({ id }) => {
+    return (await axios.get("/users/" + id)).data;
+  },
+  createUser: async (user) => {
+    //{nom, prenom, equipe, trigramme}
+    const { data } = await axios.post("/users", {
+      ...user,
+      password: "random_password"
+    });
+    return data;
+  },
 };

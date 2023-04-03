@@ -1,23 +1,15 @@
 import { axios } from "../axios";
 import { dispatch } from "../store";
-import { addEntity } from "../store/reducers/entities";
+import { addEntity, updateEntity } from "../store/reducers/entities";
+import { hideModal } from "../store/reducers/modal";
+import { addSnackbar } from "../store/reducers/snackbar";
 
 export const tacheService = {
-  getAdminUndergoingTasks: async (page) => {
-    const { data } = await axios.get(`/taches?etat=EN_COURS&page=${page}`);
-    dispatch(addEntity({ data, entity: "tache" }));
-  },
-  getAdminRejectedTasks: async (page) => {
-    const { data } = await axios.get(`/taches?etat=REJETEE&page=${page}`);
-    dispatch(addEntity({ data, entity: "tache" }));
-  },
-  getAdminFinishedTasks: async (page) => {
-    const { data } = await axios.get(`/taches?etat=FINIE&page=${page}`);
-    dispatch(addEntity({ data, entity: "tache" }));
-  },
-  getUserRecentTasks: async (page) => {
-    const { data } = await axios.get(`/taches?page=${page}`);
-    dispatch(addEntity({ data, entity: "tache" }));
+  paginateTasksList: async (page = 0, filters) => {
+    const { data } = await axios.get("/taches", {
+      params: { page, ...filters },
+    });
+    dispatch(addEntity({ entity: "tache", data }));
   },
   acceptTask: async (taskID, cb) => {
     await axios.put(`/taches/${taskID}`, { etat: "FINIE" });
@@ -27,8 +19,33 @@ export const tacheService = {
     await axios.put(`/taches/${taskID}`, { etat: "REJETEE" });
     if (typeof cb === "function") cb();
   },
-  paginateTasksList: async (page = 0, filters) => {
-    const {data} = await axios.get("/taches", { params: { page, ...filters } });
-    dispatch(addEntity({ entity: "tache", data }));
+  createTask: async (produit, quantite) => {
+    try {
+      await axios.post("/taches", { produit, quantite });
+      dispatch(
+        addSnackbar({
+          snackbar: {
+            id: Date.now() * Math.random(),
+            message: "Task created",
+            type: "success",
+          },
+        })
+      );
+      dispatch(
+        updateEntity({
+          entity: "produit",
+          id: produit,
+          data: {
+            quantiteEnTachesEnCours: (e) => e + quantite,
+          },
+        })
+      );
+      dispatch(hideModal());
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  getTache: async ({ id }) => {
+    return (await axios.get("/taches/" + id)).data;
   },
 };

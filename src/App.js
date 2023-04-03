@@ -2,6 +2,7 @@
 import { Snackbar } from "@mui/material";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { BasicModal } from "./components/Modal";
 import { PromptDialog } from "./components/PromptDialog";
 import ScrollTop from "./components/ScrollTop";
 import Routes from "./routes";
@@ -19,7 +20,7 @@ const App = () => {
   } = useSelector((s) => s);
   const {prompt} = useSelector(s=>s)
   useEffect(() => {
-    if (logged || !localStorage.getItem("token")) return;
+    if (logged) return;
 
     //add checktoken endpoint to backend
     (async () => await authService.checkToken())();
@@ -28,6 +29,7 @@ const App = () => {
     <ThemeCustomization>
       <ScrollTop>
         <PromptDialog {...prompt} />
+        <BasicModal />
         {snackbar.map((e) => (
           <Snackbar
             open={true}

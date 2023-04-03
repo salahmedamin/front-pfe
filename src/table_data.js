@@ -9,10 +9,12 @@ import { Button, IconButton, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 import { axios } from "./axios";
 import { OrderStatus } from "./pages/dashboard/OrdersTable";
+import RequestProduct from "./pages/modal/RequestProduct";
 import { factureService } from "./services/facture.service";
 import { tacheService } from "./services/tache.service";
 import { store } from "./store";
 import { deleteEntity, updateEntity } from "./store/reducers/entities";
+import { showModal } from "./store/reducers/modal";
 import { showPrompt } from "./store/reducers/prompt";
 
 const dispatch = store.dispatch;
@@ -58,6 +60,7 @@ export const table_data = {
         id: "id",
         disablePadding: false,
         label: "Task ID",
+        canEdit: false
       },
       {
         id: "user",
@@ -85,6 +88,11 @@ export const table_data = {
         disablePadding: false,
         label: "Action",
         admin: true,
+      },
+      {
+        id: "time",
+        disablePadding: false,
+        label: "Time",
       },
       {
         id: "delete",
@@ -297,7 +305,7 @@ export const table_data = {
   },
   body: {
     tache: ({ user, produit, quantite, etat, ...row }) => [
-      { value: row.id },
+      { value: row.id, canEdit: false },
       { value: `${user.nom} ${user.prenom}`, admin: true },
       {
         value: (
@@ -364,6 +372,9 @@ export const table_data = {
           </Stack>
         ),
         admin: true,
+      },
+      {
+        value: new Date(row.created_at).toLocaleString(),
       },
       {
         value: (
@@ -490,7 +501,14 @@ export const table_data = {
       },
       {
         value: (
-          <IconButton disabled={quantite - quantiteEnTachesEnCours <= 0}>
+          <IconButton
+            disabled={quantite - quantiteEnTachesEnCours <= 0}
+            onClick={() =>
+              dispatch(
+                showModal({ title: nom, body: <RequestProduct id={id} /> })
+              )
+            }
+          >
             <CompareArrowsOutlined />
           </IconButton>
         ),

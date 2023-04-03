@@ -9,4 +9,11 @@ export const fournisseurService = {
     });
     dispatch(addEntity({ entity: "fournisseur", data }));
   },
+  getFournisseur: async ({ id }) => {
+    return (await axios.get("/fournisseurs/" + id)).data;
+  },
+  createFournisseur: async ({ nom }) => {
+    const { data } = await axios.post("/founisseurs", { nom });
+    return data;
+  },
 };
