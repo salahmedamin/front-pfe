@@ -1,6 +1,7 @@
 import { Button, Stack, TextField } from "@mui/material";
 import React, { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import { demande_restockService } from "../../services/demande_restock";
 import { tacheService } from "../../services/tache.service";
 
 function RequestProduct({ id }) {
@@ -28,11 +29,11 @@ function RequestProduct({ id }) {
         variant="outlined"
       />
       <Button
-        disabled={!canSubmit}
+        // disabled={!canSubmit}
         size="large"
         variant="outlined"
         onClick={async () =>
-          !canSubmit ? undefined : await tacheService.createTask(id, quantite)
+          !canSubmit ? await demande_restockService.createDemandeRestock({produit: id,quantite}) : await tacheService.createTask(id, quantite)
         }
       >
         Confirm

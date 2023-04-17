@@ -57,6 +57,7 @@ import { showModal } from "../../store/reducers/modal";
 import { table_data } from "../../table_data";
 import { uniq } from "../../utils/unique";
 import { ModalCreateOrUpdate } from "../modal/Create/ModalCreateOrUpdate";
+import { demande_restockService } from "../../services/demande_restock";
 //import { categorieService } from "../../services/categorie.service";
 //import { equipeService } from "../../services/equipe.service";
 //import { fournisseurService } from "../../services/fournisseur.service";
@@ -66,7 +67,7 @@ import { ModalCreateOrUpdate } from "../modal/Create/ModalCreateOrUpdate";
 
 // ==============================|| ORDER TABLE - HEADER CELL ||============================== //
 
-const entityDataCallback = (user) => ({
+const entityDataCallback = () => ({
   tache: async (page, filters) =>
     await tacheService.paginateTasksList(page, filters),
   user: async (page, filters) =>
@@ -83,6 +84,7 @@ const entityDataCallback = (user) => ({
     await factureService.paginateFacturesList(page, filters),
   fournisseur: async (page, filters) =>
     await fournisseurService.paginateFournisseursList(page, filters),
+  demande_restock: async(page, filters)=>await demande_restockService.paginateDemandeRestockList(page, filters)
 });
 
 // ==============================|| ORDER TABLE - HEADER ||============================== //
@@ -298,7 +300,7 @@ export const OrdersTable = React.memo(
             width="100%"
             padding={2}
           >
-            <Button
+            {/* <Button
               color="secondary"
               variant="text"
               style={{
@@ -308,7 +310,7 @@ export const OrdersTable = React.memo(
             >
               <FilterListOutlined />
               <Typography>Filter</Typography>
-            </Button>
+            </Button> */}
             <Stack direction={"row"} gap={1}>
               <TextField
                 autoComplete={"false"}
