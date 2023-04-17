@@ -18,9 +18,11 @@ export const ManageEntity = ({ entity }) => {
       "fournisseur",
       "equipe",
       "marque",
+      "demande_restock"
     ],
     []
   );
+  
   return (
     <Grid item xs={12} md={7} lg={8}>
       {!entities.includes(

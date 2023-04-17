@@ -4,6 +4,7 @@ import {
   FactoryOutlined,
   PersonOutlined,
   ReceiptLongOutlined,
+  Replay,
   TaskAltOutlined,
   WidgetsOutlined,
   WorkspacesOutlined
@@ -70,6 +71,17 @@ const rh = ({ isAdmin }) => ({
       url: "/manage/users",
       icon: icons.PersonOutlined,
     },
+    ...(!isAdmin
+      ? []
+      : [
+          {
+            id: "refill",
+            title: "Products Refill",
+            type: "item",
+            url: "/manage/demande_restocks",
+            icon: Replay,
+          },
+        ]),
     ...(!isAdmin
       ? []
       : [

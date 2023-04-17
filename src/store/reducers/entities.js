@@ -35,6 +35,10 @@ const initialState = {
     page: 0,
     data: [],
   },
+  demande_restock: {
+    page: 0,
+    data: [],
+  },
 };
 
 const entities = createSlice({
