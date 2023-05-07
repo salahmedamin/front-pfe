@@ -26,9 +26,9 @@ const DashboardDefault = () => {
       {Object.keys(totals)
         .filter((e) => totals[e] !== null)
         .map((e, i) => (
-          <Grid key={i} item xs={12} sm={6} md={4} lg={3}>
+          <Grid key={i} item xs={12} sm={5} md={3} lg={3} alignItems={"space-between"}>
             <AnalyticEcommerce
-              title={`${e}`.toUpperCase()}
+              title={`${e.replace(/_/," ")}`.toUpperCase()}
               count={totals[e]}
               //   percentage={59.3}
               //   extra="35,000"
@@ -39,7 +39,7 @@ const DashboardDefault = () => {
       <Grid
         item
         md={8}
-        sx={{ display: { sm: "none", md: "block", lg: "none" } }}
+        sx={{ display: { sm: "none", md: "block", } }}
       />
 
       {/* row 3 */}

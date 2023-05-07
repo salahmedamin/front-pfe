@@ -56,7 +56,7 @@ const AuthLogin = () => {
                     submit: null
                 }}
                 validationSchema={Yup.object().shape({
-                    trigramme: Yup.string().min(3).max(9).required('Trigramme is required'),
+                    trigramme: Yup.string().min(3).max(50).required('Trigramme is required'),
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
