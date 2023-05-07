@@ -3,12 +3,12 @@ import { dispatch } from "../store";
 import { addEntity } from "../store/reducers/entities";
 
 export const fournisseurService = {
-  paginateFournisseursList: async (page = 0, filters, returnWithoutDispatch = true) => {
+  paginateFournisseursList: async (page = 0, filters, returnWithoutDispatch = false) => {
     const { data } = await axios.get("/fournisseurs", {
       params: { page, ...filters },
     });
-    dispatch(addEntity({ entity: "fournisseur", data }));
-    return data
+    if(!returnWithoutDispatch) dispatch(addEntity({ entity: "fournisseur", data }));
+    else return data
   },
   getFournisseur: async ({ id }) => {
     return (await axios.get("/fournisseurs/" + id)).data;
