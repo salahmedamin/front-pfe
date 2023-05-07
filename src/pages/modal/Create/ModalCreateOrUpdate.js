@@ -5,7 +5,7 @@ import {
   InputAdornment,
   Stack,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { dispatch } from "../../../store";
@@ -18,18 +18,19 @@ export const ModalCreateOrUpdate = ({
   isUpdating = false,
   id = undefined,
 }) => {
+  // console.log(entity);
   //extract creation or update data from custom json
   const creationMappingEntity = useMemo(
-    () => creationMapping[entity].fields,
+    () => creationMapping[entity]?.fields,
     [entity]
   );
   const updateMappingEntity = useMemo(
-    () => creationMapping[entity].update,
+    () => creationMapping[entity]?.update,
     [entity]
   );
   //extracted values and loading state
   const [values, setvalues] = useState(
-    creationMappingEntity.reduce(
+    creationMappingEntity?.reduce(
       (tot, next) =>
         (tot = {
           ...tot,
@@ -103,7 +104,7 @@ export const ModalCreateOrUpdate = ({
   //can our user submit this form ??
   const canSubmit = useMemo(() => {
     return creationMappingEntity
-      .find((e) => e.type === "submit")
+      ?.find((e) => e.type === "submit")
       .validate(values);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values]);
@@ -125,49 +126,50 @@ export const ModalCreateOrUpdate = ({
     </Stack>
   ) : (
     <Stack width="100%" alignItems="flex-start" gap={2}>
-      {creationMappingEntity.map((e, i) =>
+      {(creationMappingEntity || []).map((e, i) =>
         e.type === "submit" ? (
           <Button
             key={i}
             disabled={!canSubmit}
             onClick={async () => {
+              let data;
               if (!canSubmit) console.log("Please re-check ur input");
               else {
                 if (isUpdating) {
-                  const data = await updateMappingEntity.submit(
-                    values,
-                    id,
-                    () => dispatch(hideModal())
-                  );
-                  dispatch(
-                    updateEntity({
-                      entity,
-                      id,
-                      data,
-                    })
-                  );
-                } else {
-                  const data = await e.submit(values, () =>
+                  data = await updateMappingEntity.submit(values, id, () =>
                     dispatch(hideModal())
                   );
+                } else {
+                  data = await e.submit(values, () => dispatch(hideModal()));
+                }
+                if (data) {
                   dispatch(
-                    addEntity({
-                      entity,
-                      data,
+                    addSnackbar({
+                      snackbar: {
+                        type: "success",
+                        message: `${
+                          isUpdating ? "Updated" : "Created"
+                        } successfully`,
+                        id: Math.random() * Date.now(),
+                      },
                     })
                   );
+                  if (isUpdating)
+                    dispatch(
+                      updateEntity({
+                        entity,
+                        id,
+                        data,
+                      })
+                    );
+                  else
+                    dispatch(
+                      addEntity({
+                        entity,
+                        data,
+                      })
+                    );
                 }
-                dispatch(
-                  addSnackbar({
-                    snackbar: {
-                      type: "success",
-                      message: `${
-                        isUpdating ? "Updated" : "Created"
-                      } successfully`,
-                      id: Math.random() * Date.now(),
-                    },
-                  })
-                );
               }
             }}
             color="primary"

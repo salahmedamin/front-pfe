@@ -17,10 +17,11 @@ axios.interceptors.response.use(
   (err) => {
     dispatch(
       addSnackbar({
-        snackbar: { message: err.response.data.message || "An error occured" },
+        snackbar: { message: typeof err.response.data.message === "string" ? err.response.data.message : "An error occured" },
       })
     );
-    throw err
+    return err
+    // throw err
   }
 );
 

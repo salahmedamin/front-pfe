@@ -1,4 +1,5 @@
 import { categorieService } from "../../../../services/categorie.service";
+import { equipeService } from "../../../../services/equipe.service";
 import { marqueService } from "../../../../services/marque.service";
 import { productService } from "../../../../services/produit.service";
 
@@ -132,6 +133,92 @@ export const creationMapping = {
       submit: async (values, id, cb) => {
         const { nom } = values;
         const data = await marqueService.updateMarque({
+          id,
+          nom: nom.value,
+        });
+        if (typeof cb === "function") await cb();
+        return data;
+      },
+    },
+  },
+  categorie: {
+    fields: [
+      {
+        label: "Categorie's name",
+        name: "nom",
+        type: "text",
+        init: "",
+        validate: (v) => v.length > 3,
+        errorMessage: "Categorie's name must be longer than 3 letters",
+      },
+      {
+        label: "Create categorie",
+        name: "submit",
+        type: "submit",
+        submit: async (v, cb = undefined) => {
+          const { nom } = v;
+          const data = await categorieService.createCategorie({
+            nom: nom.value,
+          });
+          if (typeof cb === "function") await cb();
+          return data;
+        },
+        validate: (v) => {
+          return v.nom.value.length > 3;
+        },
+      },
+    ],
+    update: {
+      submitLabel: "Update Categorie",
+      getInit: async ({ id }) => {
+        return await categorieService.getCategorie({ id });
+      },
+      submit: async (values, id, cb) => {
+        const { nom } = values;
+        const data = await categorieService.updateCategorie({
+          id,
+          nom: nom.value,
+        });
+        if (typeof cb === "function") await cb();
+        return data;
+      },
+    },
+  },
+  equipe: {
+    fields: [
+      {
+        label: "Team's name",
+        name: "nom",
+        type: "text",
+        init: "",
+        validate: (v) => v.length > 2,
+        errorMessage: "Team's name must be longer than 2 letters",
+      },
+      {
+        label: "Create team",
+        name: "submit",
+        type: "submit",
+        submit: async (v, cb = undefined) => {
+          const { nom } = v;
+          const data = await equipeService.createEquipe({
+            nom: nom.value,
+          });
+          if (typeof cb === "function") await cb();
+          return data;
+        },
+        validate: (v) => {
+          return v.nom.value.length > 2;
+        },
+      },
+    ],
+    update: {
+      submitLabel: "Update Team",
+      getInit: async ({ id }) => {
+        return await equipeService.getEquipe({ id });
+      },
+      submit: async (values, id, cb) => {
+        const { nom } = values;
+        const data = await equipeService.updateEquipe({
           id,
           nom: nom.value,
         });

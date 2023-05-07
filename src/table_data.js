@@ -4,7 +4,7 @@ import {
   ClearOutlined,
   CompareArrowsOutlined,
   InsertLinkOutlined,
-  Replay
+  Replay,
 } from "@mui/icons-material";
 import { Button, IconButton, Stack, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -63,7 +63,7 @@ export const table_data = {
         id: "id",
         disablePadding: false,
         label: "Task ID",
-        canEdit: false
+        canEdit: false,
       },
       {
         id: "user",
@@ -310,7 +310,7 @@ export const table_data = {
         id: "id",
         disablePadding: false,
         label: "Refill ID",
-        canEdit: false
+        canEdit: false,
       },
       {
         id: "trigramme",
@@ -336,13 +336,13 @@ export const table_data = {
         id: "action",
         disablePadding: false,
         label: "Action",
-        admin: true
+        admin: true,
       },
       {
         id: "time",
         disablePadding: false,
         label: "Time",
-        admin: true
+        admin: true,
       },
       {
         id: "delete",
@@ -466,7 +466,7 @@ export const table_data = {
         admin: true,
       },
     ],
-    categorie: ({ id, nom, _count: { produits } }) => [
+    categorie: ({ id, nom, _count }) => [
       { value: id },
       { value: nom },
       {
@@ -475,7 +475,7 @@ export const table_data = {
             style={{ color: "inherit" }}
             to={`/manage/produits/?categories=${id}`}
           >
-            {produits}
+            {_count ? _count.produits : 0}
           </Link>
         ),
       },
@@ -492,7 +492,7 @@ export const table_data = {
         admin: true,
       },
     ],
-    equipe: ({ id, nom, _count: { users } }) => [
+    equipe: ({ id, nom, _count }) => [
       { value: id },
       { value: nom },
       {
@@ -501,7 +501,7 @@ export const table_data = {
             style={{ textDecoration: "underline", color: "inherit" }}
             to={`/manage/users?equipe=${nom}`}
           >
-            {users}
+            {_count ? _count.users : 0}
           </Link>
         ),
       },
@@ -525,56 +525,79 @@ export const table_data = {
       quantite,
       quantiteEnTachesEnCours,
     }) => [
-        { value: id },
-        { value: nom },
-        {
-          value: (
-            <Link
-              style={{ color: "inherit" }}
-              to={`/manage/marques/?marque=${marque}`}
-            >
-              {nomMarque}
-            </Link>
-          ),
-        },
-        { value: quantite },
-        { value: quantite - quantiteEnTachesEnCours },
-        {
-          value: (
-            <Link to={`/manage/categories/?produit=${id}`}>
-              <IconButton>
-                <InsertLinkOutlined />
-              </IconButton>
-            </Link>
-          ),
-        },
-        {
-          value: (
-            <IconButton
-              // disabled={quantite - quantiteEnTachesEnCours <= 0}
-              onClick={() =>
-                dispatch(
-                  showModal({ title: <Stack direction="row">{quantite - quantiteEnTachesEnCours <= 0 ? <Typography style={{ marginRight: 5, textDecoration: "underline", fontWeight: "bold" }}> Refill request:</Typography> : null}<Typography>{nom}</Typography></Stack>, body: <RequestProduct id={id} /> })
-                )
-              }
-            >
-              {quantite - quantiteEnTachesEnCours <= 0 ? <Replay /> : <CompareArrowsOutlined />}
+      { value: id },
+      { value: nom },
+      {
+        value: (
+          <Link
+            style={{ color: "inherit" }}
+            to={`/manage/marques/?marque=${marque}`}
+          >
+            {nomMarque}
+          </Link>
+        ),
+      },
+      { value: quantite },
+      { value: quantite - quantiteEnTachesEnCours },
+      {
+        value: (
+          <Link to={`/manage/categories/?produit=${id}`}>
+            <IconButton>
+              <InsertLinkOutlined />
             </IconButton>
-          ),
-        },
-        {
-          value: (
-            <IconButton
-              onClick={async () => {
-                await deleteCb({ id, entity: "produit" });
-              }}
-            >
-              <DeleteOutlined />
-            </IconButton>
-          ),
-          admin: true,
-        },
-      ],
+          </Link>
+        ),
+      },
+      {
+        value: (
+          <IconButton
+            // disabled={quantite - quantiteEnTachesEnCours <= 0}
+            onClick={() =>
+              dispatch(
+                showModal({
+                  title: (
+                    <Stack direction="row">
+                      {quantite - quantiteEnTachesEnCours <= 0 ? (
+                        <Typography
+                          style={{
+                            marginRight: 5,
+                            textDecoration: "underline",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {" "}
+                          Refill request:
+                        </Typography>
+                      ) : null}
+                      <Typography>{nom}</Typography>
+                    </Stack>
+                  ),
+                  body: <RequestProduct id={id} />,
+                })
+              )
+            }
+          >
+            {quantite - quantiteEnTachesEnCours <= 0 ? (
+              <Replay />
+            ) : (
+              <CompareArrowsOutlined />
+            )}
+          </IconButton>
+        ),
+      },
+      {
+        value: (
+          <IconButton
+            onClick={async () => {
+              await deleteCb({ id, entity: "produit" });
+            }}
+          >
+            <DeleteOutlined />
+          </IconButton>
+        ),
+        admin: true,
+      },
+    ],
     fournisseur: ({ id, nom, _count: { factures } }) => [
       { value: id },
       { value: nom },
@@ -633,64 +656,71 @@ export const table_data = {
       fournisseur: { nom, id: fournisseurID },
       statut,
     }) => [
-        { value: id },
-        {
-          value: (
-            <Link
-              style={{ color: "inherit" }}
-              to={`/manage/fournisseurs/?fournisseur=${fournisseurID}`}
-            >
-              {nom}
-            </Link>
-          ),
-        },
-        { value: montant },
-        {
-          value: (
-            <Link
-              style={{ color: "inherit" }}
-              to={`/manage/factures/?statut=${statut}`}
-            >
-              <OrderStatus status={statut === "EN_COURS" ? 0 : 1} />
-            </Link>
-          ),
-        },
-        {
-          value: (
-            <Button
-              color="success"
-              variant="outlined"
-              disabled={statut !== "EN_COURS"}
-              onClick={() =>
-                factureService.acceptFacture(id, () =>
-                  dispatch(
-                    updateEntity({
-                      entity: "facture",
-                      id,
-                      data: { statut: "PAYEE" },
-                    })
-                  )
+      { value: id },
+      {
+        value: (
+          <Link
+            style={{ color: "inherit" }}
+            to={`/manage/fournisseurs/?fournisseur=${fournisseurID}`}
+          >
+            {nom}
+          </Link>
+        ),
+      },
+      { value: montant },
+      {
+        value: (
+          <Link
+            style={{ color: "inherit" }}
+            to={`/manage/factures/?statut=${statut}`}
+          >
+            <OrderStatus status={statut === "EN_COURS" ? 0 : 1} />
+          </Link>
+        ),
+      },
+      {
+        value: (
+          <Button
+            color="success"
+            variant="outlined"
+            disabled={statut !== "EN_COURS"}
+            onClick={() =>
+              factureService.acceptFacture(id, () =>
+                dispatch(
+                  updateEntity({
+                    entity: "facture",
+                    id,
+                    data: { statut: "PAYEE" },
+                  })
                 )
-              }
-            >
-              <CheckOutlined fontSize="small" />
-            </Button>
-          ),
-        },
-        {
-          value: (
-            <IconButton
-              onClick={async () => {
-                await deleteCb({ id, entity: "facture" });
-              }}
-            >
-              <DeleteOutlined />
-            </IconButton>
-          ),
-          admin: true,
-        },
-      ],
-    demande_restock: ({ id, user: { trigramme }, produit: { id: produit, nom }, quantite, fulfilled, created_at }) => [
+              )
+            }
+          >
+            <CheckOutlined fontSize="small" />
+          </Button>
+        ),
+      },
+      {
+        value: (
+          <IconButton
+            onClick={async () => {
+              await deleteCb({ id, entity: "facture" });
+            }}
+          >
+            <DeleteOutlined />
+          </IconButton>
+        ),
+        admin: true,
+      },
+    ],
+    demande_restock: ({
+      id,
+      user: { trigramme },
+      produit: { id: produit, nom },
+      quantite,
+      fulfilled,
+      created_at,
+    }) => [
       { value: id, canEdit: false },
       {
         value: (
@@ -713,7 +743,7 @@ export const table_data = {
         ),
       },
       {
-        value: quantite
+        value: quantite,
       },
       {
         value: (
@@ -721,21 +751,23 @@ export const table_data = {
             to={`/manage/demande_restocks/?fulfilled=${fulfilled ? 1 : 0}`}
             style={{ color: "inherit" }}
           >
-            <OrderStatus
-              status={!fulfilled ? 0 : 1}
-            />
+            <OrderStatus status={!fulfilled ? 0 : 1} />
           </Link>
         ),
       },
       {
-        value: <Button
-          color="success"
-          variant="outlined"
-          disabled={fulfilled}
-          onClick={() => demande_restockService.fulfillDemandeRestock({ demande: id })}
-        >
-          <CheckOutlined fontSize="small" />
-        </Button>
+        value: (
+          <Button
+            color="success"
+            variant="outlined"
+            disabled={fulfilled}
+            onClick={() =>
+              demande_restockService.fulfillDemandeRestock({ demande: id })
+            }
+          >
+            <CheckOutlined fontSize="small" />
+          </Button>
+        ),
       },
       {
         value: new Date(created_at).toLocaleString(),

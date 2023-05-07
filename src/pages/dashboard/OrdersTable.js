@@ -38,12 +38,12 @@ import { CloseOutlined } from "@ant-design/icons";
 import {
   AddOutlined,
   ArrowBack,
-  CreateOutlined,
-  FilterListOutlined
+  CreateOutlined
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router";
 import { createSearchParams } from "react-router-dom";
 import { categorieService } from "../../services/categorie.service";
+import { demande_restockService } from "../../services/demande_restock";
 import { equipeService } from "../../services/equipe.service";
 import { factureService } from "../../services/facture.service";
 import { fournisseurService } from "../../services/fournisseur.service";
@@ -57,7 +57,6 @@ import { showModal } from "../../store/reducers/modal";
 import { table_data } from "../../table_data";
 import { uniq } from "../../utils/unique";
 import { ModalCreateOrUpdate } from "../modal/Create/ModalCreateOrUpdate";
-import { demande_restockService } from "../../services/demande_restock";
 //import { categorieService } from "../../services/categorie.service";
 //import { equipeService } from "../../services/equipe.service";
 //import { fournisseurService } from "../../services/fournisseur.service";
@@ -210,7 +209,7 @@ export const OrdersTable = React.memo(
       [locationSearch]
     );
     const dataToMap = useMemo(() => uniq(data), [data]);
-    const cannotCreateEntities = useMemo(() => ["tache"], []);
+    const cannotCreateEntities = useMemo(() => ["tache","demande_restock"], []);
     //usecallback is same as usememo but for functions to avoid unneeded rerendering
     //onSearch
     const onSearch = useCallback(
@@ -266,7 +265,7 @@ export const OrdersTable = React.memo(
       setsearchValue(backendFilters[table_data.search[entity]] || "");
       setfetchedPages([]);
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.search]);
+    }, [location.search, entity]);
 
     return (
       <Box

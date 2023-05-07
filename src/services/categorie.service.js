@@ -21,4 +21,7 @@ export const categorieService = {
   getCategorie: async ({ id }) => {
     return (await axios.get("/categories/" + id)).data;
   },
+  updateCategorie: async(categorie)=>{
+    return (await axios.put("/categories/" + categorie.id,categorie)).data;
+  }
 };
