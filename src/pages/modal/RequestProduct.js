@@ -1,7 +1,7 @@
 import { Button, Stack, TextField } from "@mui/material";
 import React, { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import { demande_restockService } from "../../services/demande_restock";
+import { demande_restockService } from "../../services/demande_restock.service";
 import { tacheService } from "../../services/tache.service";
 
 function RequestProduct({ id }) {

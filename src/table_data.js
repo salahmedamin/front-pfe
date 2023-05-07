@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { axios } from "./axios";
 import { OrderStatus } from "./pages/dashboard/OrdersTable";
 import RequestProduct from "./pages/modal/RequestProduct";
-import { demande_restockService } from "./services/demande_restock";
+import { demande_restockService } from "./services/demande_restock.service";
 import { factureService } from "./services/facture.service";
 import { tacheService } from "./services/tache.service";
 import { store } from "./store";
@@ -231,6 +231,7 @@ export const table_data = {
         id: "id",
         disablePadding: false,
         label: "ID",
+        canEdit: false,
       },
       {
         id: "fournissuer",
@@ -598,7 +599,7 @@ export const table_data = {
         admin: true,
       },
     ],
-    fournisseur: ({ id, nom, _count: { factures } }) => [
+    fournisseur: ({ id, nom, _count }) => [
       { value: id },
       { value: nom },
       {
@@ -607,7 +608,7 @@ export const table_data = {
             style={{ color: "inherit" }}
             to={`/manage/factures/?fournisseurID=${id}`}
           >
-            {factures}
+            {_count ? _count.factures : 0}
           </Link>
         ),
       },
@@ -656,7 +657,7 @@ export const table_data = {
       fournisseur: { nom, id: fournisseurID },
       statut,
     }) => [
-      { value: id },
+      { value: id, canEdit: false  },
       {
         value: (
           <Link

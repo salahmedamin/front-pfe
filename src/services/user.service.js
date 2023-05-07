@@ -18,6 +18,14 @@ export const userService = {
       })
     );
   },
+  updateUser: async (user) => {
+    await axios.put("/users/"+user.id, user);
+    dispatch(
+      addSnackbar({
+        snackbar: { message: "Updated", type: "success" },
+      })
+    );
+  },
   getUser: async ({ id }) => {
     return (await axios.get("/users/" + id)).data;
   },
@@ -25,7 +33,7 @@ export const userService = {
     //{nom, prenom, equipe, trigramme}
     const { data } = await axios.post("/users", {
       ...user,
-      password: "random_password"
+      password: "SIMPLE_PASSWORD"
     });
     return data;
   },

@@ -43,7 +43,7 @@ import {
 import { useLocation, useNavigate } from "react-router";
 import { createSearchParams } from "react-router-dom";
 import { categorieService } from "../../services/categorie.service";
-import { demande_restockService } from "../../services/demande_restock";
+import { demande_restockService } from "../../services/demande_restock.service";
 import { equipeService } from "../../services/equipe.service";
 import { factureService } from "../../services/facture.service";
 import { fournisseurService } from "../../services/fournisseur.service";
